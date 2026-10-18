@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Assumed data model:
+    // Collection: dealers. Document ID: stable dealer ID from dealers.csv.
+    // Required fields: name (string, 1-100 chars) and pincode_prefixes
+    // (pipe-separated three-digit prefixes). Optional phone is a string.
+    // Dealer documents are provisioned by a trusted Admin SDK script; clients
+    // may read them after sign-in but may never write them.
+    //
+    // Collection: leads. Document ID: the 10-digit normalized phone number.
+    // Required fields: lead_id (string, 1-100 chars), name (string, 1-120
+    // chars), phone (10 digits), pincode (6 digits), product and source
+    // (allowed strings), status (New, Contacted, Converted, or Lost), dealer_id
+    // (string, 1-40 chars), dealer_name (string, 1-100 chars), and created_on
+    // (timestamp). Only status is mutable.
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function hasValidStatus(data) {
+      return data.status is string &&
+        data.status in ['New', 'Contacted', 'Converted', 'Lost'];
+    }
+
+    function isValidLead(data, leadId) {
+      return data.keys().hasAll([
+          'lead_id', 'name', 'phone', 'pincode', 'product', 'source',
+          'status', 'dealer_id', 'dealer_name', 'created_on'
+        ]) &&
+        data.keys().hasOnly([
+          'lead_id', 'name', 'phone', 'pincode', 'product', 'source',
+          'status', 'dealer_id', 'dealer_name', 'created_on'
+        ]) &&
+        data.lead_id is string &&
+        data.lead_id.size() >= 1 &&
+        data.lead_id.size() <= 100 &&
+        data.name is string &&
+        data.name.size() >= 1 &&
+        data.name.size() <= 120 &&
+        data.name.matches('.*\\S.*') &&
+        data.phone is string &&
+        data.phone.matches('^[0-9]{10}$') &&
+        data.phone == leadId &&
+        data.pincode is string &&
+        data.pincode.matches('^[0-9]{6}$') &&
+        data.product in [
+          'PuREPower Home 3kWh',
+          'PuREPower Home 5kWh',
+          'PuREPower Commercial 10kWh'
+        ] &&
+        data.source in ['Website', 'Voice Agent', 'WhatsApp', 'Dealer Walk-in'] &&
+        data.dealer_id is string &&
+        data.dealer_id.size() >= 1 &&
+        data.dealer_id.size() <= 40 &&
+        data.dealer_name is string &&
+        data.dealer_name.size() >= 1 &&
+        data.dealer_name.size() <= 100 &&
+        data.created_on is timestamp &&
+        hasValidStatus(data);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /dealers/{dealerId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if false;
+    }
+
+    match /leads/{leadId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() &&
+        isValidLead(request.resource.data, leadId);
+      allow update: if isAuthenticated() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasAny(['status']) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) &&
+        isValidLead(request.resource.data, leadId);
+      allow delete: if false;
+    }
+  }
+}

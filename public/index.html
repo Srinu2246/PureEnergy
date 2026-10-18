@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f7f6">
+    <meta name="description" content="Pure Energy dealer lead routing dashboard">
+    <title>Dealer Lead Router | PuRE Energy</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <section class="auth-screen" id="auth-screen" aria-labelledby="auth-title">
+      <div class="auth-card">
+        <a class="brand auth-brand" href="#" aria-label="PuRE Energy home">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <span class="brand-copy"><strong>PuRE Energy</strong><small>Dealer operations</small></span>
+        </a>
+        <div class="auth-heading">
+          <h1 id="auth-title">Welcome back</h1>
+          <p id="auth-description">Sign in to continue to your lead dashboard.</p>
+        </div>
+        <div class="notice auth-notice" id="auth-notice" role="alert" aria-live="polite" hidden></div>
+        <form id="auth-form" class="auth-form">
+          <label class="field">
+            <span>Email address</span>
+            <input id="auth-email" type="email" autocomplete="email" required>
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input id="auth-password" type="password" autocomplete="current-password" minlength="6" required>
+          </label>
+          <button class="primary-button" id="auth-submit" type="submit">Sign in</button>
+        </form>
+        <button class="secondary-button" id="google-sign-in" type="button">Continue with Google</button>
+        <p class="auth-toggle">
+          <span id="auth-toggle-prompt">New to the workspace?</span>
+          <button id="auth-toggle" type="button">Create an account</button>
+        </p>
+      </div>
+    </section>
+
+    <div class="app-shell" id="app-shell" hidden>
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="PuRE Energy home">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <span class="brand-copy"><strong>PuRE Energy</strong><small>Dealer operations</small></span>
+        </a>
+        <p class="nav-label">WORKSPACE</p>
+        <nav class="side-nav" aria-label="Main navigation">
+          <a class="nav-item active" href="#overview"><span class="nav-icon" aria-hidden="true">▦</span>Overview</a>
+          <a class="nav-item" href="#leads"><span class="nav-icon" aria-hidden="true">↗</span>Lead pipeline</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span><strong>Live sync</strong><small>Firestore connection</small></span>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">DEALER OPERATIONS <span>/</span> OVERVIEW</p>
+            <h1>Lead router</h1>
+          </div>
+          <div class="topbar-right">
+            <span class="today-label" id="signed-in-user">Sales workspace</span>
+            <span class="user-avatar" id="user-avatar" aria-label="Signed-in user">U</span>
+            <button class="sign-out-button" id="sign-out-button" type="button">Sign out</button>
+          </div>
+        </header>
+
+        <div class="content">
+          <section class="welcome-row" id="overview">
+            <div>
+              <h2>Good work starts with a great follow-up.</h2>
+              <p>Capture new enquiries and route them to the right dealer automatically.</p>
+            </div>
+            <div class="live-pill"><span class="live-dot"></span>Live dashboard</div>
+          </section>
+
+          <div class="notice" id="app-notice" role="status" aria-live="polite" hidden></div>
+
+          <section class="summary-grid" aria-label="Lead status summary">
+            <article class="summary-card total-card">
+              <div class="summary-top"><span class="summary-icon total-icon">↗</span><span class="summary-caption">ALL ENQUIRIES</span></div>
+              <strong class="summary-value" id="total-count">—</strong>
+              <span class="summary-foot">Total leads in your pipeline</span>
+            </article>
+            <article class="summary-card">
+              <div class="summary-top"><span class="status-indicator status-new"></span><span class="summary-caption">NEW</span></div>
+              <strong class="summary-value" id="count-new">—</strong>
+              <span class="summary-foot">Awaiting first contact</span>
+            </article>
+            <article class="summary-card">
+              <div class="summary-top"><span class="status-indicator status-contacted"></span><span class="summary-caption">CONTACTED</span></div>
+              <strong class="summary-value" id="count-contacted">—</strong>
+              <span class="summary-foot">Follow-up in progress</span>
+            </article>
+            <article class="summary-card">
+              <div class="summary-top"><span class="status-indicator status-converted"></span><span class="summary-caption">CONVERTED</span></div>
+              <strong class="summary-value" id="count-converted">—</strong>
+              <span class="summary-foot">Won customer enquiries</span>
+            </article>
+            <article class="summary-card">
+              <div class="summary-top"><span class="status-indicator status-lost"></span><span class="summary-caption">LOST</span></div>
+              <strong class="summary-value" id="count-lost">—</strong>
+              <span class="summary-foot">Closed enquiries</span>
+            </article>
+          </section>
+
+          <section class="workspace-grid">
+            <article class="panel lead-form-panel">
+              <div class="panel-heading">
+                <div><span class="section-kicker">NEW ENQUIRY</span><h2>Add a lead</h2></div>
+                <span class="heading-icon" aria-hidden="true">＋</span>
+              </div>
+              <p class="panel-description">Enter the customer's details to match them with a local dealer.</p>
+
+              <form id="lead-form" novalidate>
+                <label class="field">
+                  <span>Customer name <span class="required">*</span></span>
+                  <input id="name" name="name" autocomplete="name" placeholder="e.g. Priya Sharma" required>
+                  <small class="field-error" id="name-error"></small>
+                </label>
+                <div class="field-row">
+                  <label class="field">
+                    <span>Mobile number <span class="required">*</span></span>
+                    <input id="mobile" name="mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="10-digit number" required>
+                    <small class="field-hint">+91 and spaces are accepted</small>
+                    <small class="field-error" id="mobile-error"></small>
+                  </label>
+                  <label class="field">
+                    <span>Pincode <span class="required">*</span></span>
+                    <input id="pincode" name="pincode" inputmode="numeric" autocomplete="postal-code" placeholder="6 digits" required>
+                    <small class="field-error" id="pincode-error"></small>
+                  </label>
+                </div>
+                <label class="field">
+                  <span>Product <span class="required">*</span></span>
+                  <select id="product" name="product" required>
+                    <option value="">Choose a product</option>
+                    <option>PuREPower Home 3kWh</option>
+                    <option>PuREPower Home 5kWh</option>
+                    <option>PuREPower Commercial 10kWh</option>
+                  </select>
+                  <small class="field-error" id="product-error"></small>
+                </label>
+                <label class="field">
+                  <span>Lead source <span class="required">*</span></span>
+                  <select id="source" name="source" required>
+                    <option value="">Choose a source</option>
+                    <option>Website</option>
+                    <option>Voice Agent</option>
+                    <option>WhatsApp</option>
+                    <option>Dealer Walk-in</option>
+                  </select>
+                  <small class="field-error" id="source-error"></small>
+                </label>
+                <div class="assignment-note">
+                  <span aria-hidden="true">⌖</span>
+                  <span id="assignment-preview" aria-live="polite">Enter a 6-digit pincode to preview the dealer assignment.</span>
+                </div>
+                <button class="primary-button" id="submit-button" type="submit">Create lead <span aria-hidden="true">→</span></button>
+                <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
+              </form>
+            </article>
+
+            <div class="right-column">
+              <article class="panel dealer-panel">
+                <div class="panel-heading dealer-heading">
+                  <div><span class="section-kicker">ROUTING NETWORK</span><h2>Leads by dealer</h2></div>
+                  <span class="dealer-total"><span id="dealer-count">—</span> dealers</span>
+                </div>
+                <p class="panel-description">Live distribution across the dealer network.</p>
+                <div class="dealer-list" id="dealer-counts">
+                  <p class="empty-state">Connecting to Firestore…</p>
+                </div>
+              </article>
+
+              <article class="panel leads-panel" id="leads">
+                <div class="panel-heading leads-heading">
+                  <div><span class="section-kicker">CUSTOMER ENQUIRIES</span><h2>Lead pipeline</h2></div>
+                  <span class="record-count" id="record-count">0 records</span>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead><tr><th>Customer</th><th>Product</th><th>Dealer</th><th>Received</th><th>Status</th></tr></thead>
+                    <tbody id="lead-rows"><tr><td class="empty-table" colspan="5">Connect Firebase to load your leads.</td></tr></tbody>
+                  </table>
+                </div>
+              </article>
+            </div>
+          </section>
+          <footer class="page-footer"><span>PuRE Energy <span aria-hidden="true">·</span> Dealer Lead Router</span><span>Powered by Firebase</span></footer>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

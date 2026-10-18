@@ -1,0 +1,41 @@
+lead_id,action,reason
+L1001,imported,Imported without changes.
+L1002,imported,Imported without changes.
+L1003,imported,Imported without changes.
+L1004,fixed,Imported after normalizing phone.
+L1005,imported,Imported without changes.
+L1006,fixed,Imported after normalizing phone.
+L1007,imported,Imported without changes.
+L1008,imported,Imported without changes.
+L1009,rejected,Mobile number must contain exactly 10 digits.
+L1010,imported,Imported without changes.
+L1011,imported,Imported without changes.
+L1012,rejected,Pincode must contain exactly 6 digits.
+L1013,imported,Imported without changes.
+L1014,imported,Imported without changes.
+L1015,assigned_inhouse,No dealer prefix matched; assigned to In-house Sales.
+L1016,imported,Imported without changes.
+L1017,imported,Imported without changes.
+L1018,rejected,Date must use the valid YYYY-MM-DD format.
+L1019,imported,Imported without changes.
+L1020,fixed,Imported after normalizing status.
+L1021,imported,Imported without changes.
+L1022,imported,Imported without changes.
+L1023,fixed,Imported after normalizing product.
+L1024,imported,Imported without changes.
+L1025,imported,Imported without changes.
+L1026,rejected,Customer name is required.
+L1027,imported,Imported without changes.
+L1028,fixed,Imported after normalizing source.
+L1029,imported,Imported without changes.
+L1030,imported,Imported without changes.
+L1031,imported,Imported without changes.
+L1032,imported,Imported without changes.
+L1033,imported,Imported without changes.
+L1034,imported,Imported without changes.
+L1035,imported,Imported without changes.
+L1036,merged,Duplicate mobile number; kept the first valid row.
+L1037,merged,Duplicate mobile number; kept the first valid row.
+L1038,merged,Duplicate mobile number; kept the first valid row.
+L1039,merged,Duplicate mobile number; kept the first valid row.
+L1033,merged,Duplicate mobile number; kept the first valid row.
